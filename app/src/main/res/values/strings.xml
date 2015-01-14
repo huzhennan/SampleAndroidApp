@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SampleAndroidApp</string>
+    <string name="only_one_account_supported">只支持登陆一个账号</string>
+    <string name="login_in">登陆</string>
 </resources>

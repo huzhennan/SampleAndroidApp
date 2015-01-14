@@ -1,4 +1,4 @@
-package com.hzn.sampleandroidapp;
+package com.hzn.sample;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
