@@ -10,7 +10,6 @@ import com.hzn.sample.fragments.LoginFragment;
  * Created by hzn on 15-1-14.
  */
 public class LoginActivity extends SingleFragmentActivity {
-    public static final String PARAM_FROM_INTERNAL = "com.hzn.sample.activitys.internal";
 
     @Override
     protected Fragment createFragment() {
@@ -19,7 +18,7 @@ public class LoginActivity extends SingleFragmentActivity {
 
     public static void startLogin(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
-        intent.putExtra(PARAM_FROM_INTERNAL, true);
+        intent.putExtra(LoginFragment.PARAM_FROM_INTERNAL, true);
         context.startActivity(intent);
     }
 }
