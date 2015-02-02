@@ -10,14 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hzn.sample.R;
 import com.hzn.sample.activitys.HomeActivity;
 import com.hzn.sample.auth.AccountAuthenticator;
+import com.hzn.sample.network.ConnectNetworkError;
 import com.hzn.sample.network.DataService;
+import com.hzn.sample.network.UnauthorizedException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -46,7 +47,7 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.inject(this, view);
         return view;
     }
@@ -73,39 +74,47 @@ public class LoginFragment extends Fragment {
                 Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
-                        String token =  DataService.auth(username, password);
+                        String token = DataService.auth(username, password);
                         Log.e(TAG, "debug get token:" + token);
                         subscriber.onNext(token);
                         subscriber.onCompleted();
                     }
                 }))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
-        .subscribe(new Action1<String>() {
-            @Override
-            public void call(String token) {
-                final AccountManager accountManager = AccountManager.get(getActivity());
-                final Account account = new Account(username, AccountAuthenticator.ACCOUNT_TYPE);
-                accountManager.addAccountExplicitly(account, password, null);
-                accountManager.setAuthToken(account, AccountAuthenticator.ACCOUNT_TYPE, token);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String token) {
+                        final AccountManager accountManager = AccountManager.get(getActivity());
+                        final Account account = new Account(username, AccountAuthenticator.ACCOUNT_TYPE);
+                        accountManager.addAccountExplicitly(account, password, null);
+                        accountManager.setAuthToken(account, AccountAuthenticator.ACCOUNT_TYPE, token);
 
-                Toast.makeText(getActivity(), R.string.login_success, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.login_success, Toast.LENGTH_LONG).show();
 
-                if (mFromInternal) {
-                    Intent intent = new Intent(getActivity(), HomeActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
-                } else {
-                    getActivity().finish();
-                }
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                throwable.printStackTrace();
-                Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
-            }
-        });
+                        if (mFromInternal) {
+                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                        } else {
+                            getActivity().finish();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        if (throwable instanceof ConnectNetworkError) {
+                            Toast.makeText(getActivity(), R.string.connect_network_error, Toast.LENGTH_LONG)
+                                    .show();
+                        } else if (throwable instanceof UnauthorizedException) {
+                            Toast.makeText(getActivity(), R.string.username_or_password_is_error,
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getActivity(), R.string.expected_happened, Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "expected happened.", throwable);
+                        }
+                    }
+                });
     }
 
     @Override

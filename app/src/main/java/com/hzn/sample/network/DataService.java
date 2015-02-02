@@ -16,6 +16,7 @@ public class DataService {
         sAdapter = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setErrorHandler(new CustomErrorHandler())
                 .build();
     }
 
