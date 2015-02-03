@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hzn.sample.R;
-import com.hzn.sample.activitys.HomeActivity;
+import com.hzn.sample.test.HomeForLoginTestActivity;
 import com.hzn.sample.auth.AccountAuthenticator;
 import com.hzn.sample.network.ConnectNetworkError;
 import com.hzn.sample.network.DataService;
@@ -67,7 +67,7 @@ public class LoginFragment extends Fragment {
     public void login(View view) {
         String username = mNameText.getText().toString();
         String password = mPasswordText.getText().toString();
-        // 验证参数的合理性
+        // TODO:验证参数的合理性
 
         // 请求获取auth
         AppObservable.bindFragment(this,
@@ -93,7 +93,7 @@ public class LoginFragment extends Fragment {
                         Toast.makeText(getActivity(), R.string.login_success, Toast.LENGTH_LONG).show();
 
                         if (mFromInternal) {
-                            Intent intent = new Intent(getActivity(), HomeActivity.class);
+                            Intent intent = new Intent(getActivity(), HomeForLoginTestActivity.class);
                             startActivity(intent);
                             getActivity().finish();
                         } else {

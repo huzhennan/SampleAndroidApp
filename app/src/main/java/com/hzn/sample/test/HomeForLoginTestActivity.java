@@ -1,23 +1,21 @@
-package com.hzn.sample.activitys;
+package com.hzn.sample.test;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.hzn.sample.R;
+import com.hzn.sample.activitys.BaseActivity;
+import com.hzn.sample.activitys.LoginActivity;
 import com.hzn.sample.auth.AccountAuthenticator;
 
 import java.io.IOException;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
@@ -29,12 +27,12 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hzn on 15-1-14.
  */
-public class HomeActivity extends BaseActivity {
+public class HomeForLoginTestActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_login_test);
         ButterKnife.inject(this);
     }
 
@@ -71,9 +69,9 @@ public class HomeActivity extends BaseActivity {
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String token) {
-                        AccountManager am = AccountManager.get(HomeActivity.this);
+                        AccountManager am = AccountManager.get(HomeForLoginTestActivity.this);
                         am.invalidateAuthToken(AccountAuthenticator.ACCOUNT_TYPE, token);
-                        Toast.makeText(HomeActivity.this, token, Toast.LENGTH_LONG).show();
+                        Toast.makeText(HomeForLoginTestActivity.this, token, Toast.LENGTH_LONG).show();
                     }
                 }, new Action1<Throwable>() {
                     @Override
